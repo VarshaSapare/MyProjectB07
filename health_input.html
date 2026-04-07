@@ -1,0 +1,158 @@
+<!-- health_input.html -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>General Health Input</title>
+    <!-- Add Bootstrap or any CSS if needed -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+    <div class="container mt-5">
+        <h2>Enter Your Health Information</h2>
+        <form method="POST" action="/health">
+            <div class="form-group">
+                <label for="general_health">General Health:</label>
+                <select class="form-control" id="general_health" name="general_health" required>
+                    <option value="Poor">Poor</option>
+                    <option value="Fair">Fair</option>
+                    <option value="Good">Good</option>
+                    <option value="Very Good">Very Good</option>
+                    <option value="Excellent">Excellent</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="checkup">Last Checkup:</label>
+                <select class="form-control" id="checkup" name="checkup" required>
+                    <option value="Within the past year">Within the past year</option>
+                    <option value="Within the past 2 years">Within the past 2 years</option>
+                    <option value="Within the past 5 years">Within the past 5 years</option>
+                    <option value="5 or more years ago">5 or more years ago</option>
+                    <option value="Never">Never</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="exercise">Exercise in Past 30 Days:</label>
+                <select class="form-control" id="exercise" name="exercise" required>
+                    <option value="Yes">Yes</option>
+                    <option value="No">No</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="heart_disease">Have Heart Disease:</label>
+                <select class="form-control" id="heart_disease" name="heart_disease" required>
+                    <option value="Yes">Yes</option>
+                    <option value="No">No</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="skin_cancer">Have Skin Cancer:</label>
+                <select class="form-control" id="skin_cancer" name="skin_cancer" required>
+                    <option value="Yes">Yes</option>
+                    <option value="No">No</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="other_cancer">Have Other Cancer:</label>
+                <select class="form-control" id="other_cancer" name="other_cancer" required>
+                    <option value="Yes">Yes</option>
+                    <option value="No">No</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="depression">Have Depression:</label>
+                <select class="form-control" id="depression" name="depression" required>
+                    <option value="Yes">Yes</option>
+                    <option value="No">No</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="diabetes">Diabetes Status:</label>
+                <select class="form-control" id="diabetes" name="diabetes" required>
+                    <option value="No">No</option>
+                    <option value="No, pre-diabetes or borderline diabetes">No, pre-diabetes or borderline diabetes</option>
+                    <option value="Yes">Yes</option>
+                    <option value="Yes, but female told only during pregnancy">Yes, but female told only during pregnancy</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="arthritis">Have Arthritis:</label>
+                <select class="form-control" id="arthritis" name="arthritis" required>
+                    <option value="Yes">Yes</option>
+                    <option value="No">No</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="sex">Sex:</label>
+                <select class="form-control" id="sex" name="sex" required>
+                    <option value="Female">Female</option>
+                    <option value="Male">Male</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="age_category">Age Category:</label>
+                <select class="form-control" id="age_category" name="age_category" required>
+                    <option value="18-24">18-24</option>
+                    <option value="25-29">25-29</option>
+                    <option value="30-34">30-34</option>
+                    <option value="35-39">35-39</option>
+                    <option value="40-44">40-44</option>
+                    <option value="45-49">45-49</option>
+                    <option value="50-54">50-54</option>
+                    <option value="55-59">55-59</option>
+                    <option value="60-64">60-64</option>
+                    <option value="65-69">65-69</option>
+                    <option value="70-74">70-74</option>
+                    <option value="75-79">75-79</option>
+                    <option value="80+">80+</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="height_cm">Height (cm):</label>
+                <input type="number" class="form-control" id="height_cm" name="height_cm" required>
+            </div>
+            <div class="form-group">
+                <label for="weight_kg">Weight (kg):</label>
+                <input type="number" class="form-control" id="weight_kg" name="weight_kg" required>
+            </div>
+            <div class="form-group">
+                <label for="bmi">BMI:</label>
+                <input type="number" step="0.01" class="form-control" id="bmi" name="bmi" required>
+            </div>
+            <div class="form-group">
+                <label for="smoking_history">Smoking History:</label>
+                <select class="form-control" id="smoking_history" name="smoking_history" required>
+                    <option value="Yes">Yes</option>
+                    <option value="No">No</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="heart_disease">Do you have Heart Disease / Coronary Heart Disease?</label>
+                <select class="form-control" id="heart_disease" name="heart_disease" required>
+                    <option value="No">No</option>
+                    <option value="Yes">Yes</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="alcohol_consumption">Alcohol Consumption (days/month):</label>
+                <input type="number" class="form-control" id="alcohol_consumption" name="alcohol_consumption" required>
+            </div>
+            <div class="form-group">
+                <label for="fruit_consumption">Fruit Consumption (servings/month):</label>
+                <input type="number" class="form-control" id="fruit_consumption" name="fruit_consumption" required>
+            </div>
+            <div class="form-group">
+                <label for="green_vegetables_consumption">Green Vegetables Consumption (servings/month):</label>
+                <input type="number" class="form-control" id="green_vegetables_consumption" name="green_vegetables_consumption" required>
+            </div>
+            <div class="form-group">
+                <label for="friedpotato_consumption">Fried Potato Consumption (servings/month):</label>
+                <input type="number" class="form-control" id="friedpotato_consumption" name="friedpotato_consumption" required>
+            </div>
+            <button type="submit" class="btn btn-primary">Submit</button>
+        </form>
+    </div>
+</body>
+</html>

@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+{% block title %}Home - Cardiac Health AI{% endblock %}
+
+{% block content %}
+<div class="text-center mb-5">
+    <h1 class="display-4 fw-bold text-heart">CardioTox Risk Prediction System</h1>
+    <p class="lead text-muted">AI-Driven ECG Analysis and Cardiac Risk Prediction</p>
+</div>
+
+<div class="row g-4">
+    <div class="col-md-6">
+        <div class="card h-100 text-center">
+            <div class="card-body p-5">
+                <i class="fas fa-wave-square fa-4x text-danger mb-4"></i>
+                <h3>ECG Rhythm Classification</h3>
+                <p>Upload your ECG image to detect cardiac abnormalities using deep CNN.</p>
+                <div class="mb-3">
+                    <span class="badge bg-danger me-1">Atrial Fibrillation</span>
+                    <span class="badge bg-warning me-1">Murmur</span>
+                    <span class="badge bg-success">Normal</span>
+                </div>
+            </div>
+            <div class="card-footer bg-transparent">
+                <a href="{{ url_for('ecg_diagnosis') }}" class="btn btn-danger btn-lg w-100">
+                    <i class="fas fa-upload me-2"></i>Analyze ECG
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-6">
+        <div class="card h-100 text-center">
+            <div class="card-body p-5">
+                <i class="fas fa-heart fa-4x text-success mb-4"></i>
+                <h3>General Health Score</h3>
+                <p>Enter lifestyle & clinical data to get your overall health status prediction.</p>
+                <div class="mb-3">
+                    <span class="badge bg-success">Excellent</span>
+                    <span class="badge bg-info me-1">Very Good</span>
+                    <span class="badge bg-warning">Fair</span>
+                </div>
+            </div>
+            <div class="card-footer bg-transparent">
+                <a href="{{ url_for('health_input') }}" class="btn btn-success btn-lg w-100">
+                    <i class="fas fa-clipboard-check me-2"></i>Predict Health
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--<div class="mt-5 text-center">
+    <div class="card border-0 shadow">
+        <div class="card-body">
+            <h4>Models Used</h4>
+            <div class="row justify-content-center">
+                <div class="col-md-3"><div class="alert alert-danger">CNN (ECG)</div></div>
+                <div class="col-md-3"><div class="alert alert-success">Random Forest (Health)</div></div>
+            </div>
+        </div>
+    </div>
+</div>-->
+{% endblock %}

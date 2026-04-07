@@ -1,0 +1,680 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Comprehensive Health Assessment</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        .assessment-container {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px 0;
+        }
+        .form-card {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+            overflow: hidden;
+        }
+        .form-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        .form-body {
+            padding: 30px;
+        }
+        .section-title {
+            color: #764ba2;
+            border-bottom: 2px solid #764ba2;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+            font-weight: 600;
+        }
+        .required::after {
+            content: " *";
+            color: #dc3545;
+        }
+        .feature-icon {
+            font-size: 24px;
+            color: #764ba2;
+            margin-right: 10px;
+        }
+        .upload-area {
+            border: 3px dashed #764ba2;
+            border-radius: 10px;
+            padding: 40px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            background: #f8f9fa;
+        }
+        .upload-area:hover {
+            background: #e9ecef;
+            border-color: #667eea;
+        }
+        .upload-preview {
+            max-width: 100%;
+            max-height: 200px;
+            margin-top: 20px;
+            display: none;
+        }
+        .form-step {
+            display: none;
+        }
+        .form-step.active {
+            display: block;
+        }
+        .step-indicator {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 30px;
+            position: relative;
+        }
+        .step-indicator::before {
+            content: '';
+            position: absolute;
+            top: 20px;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: #dee2e6;
+            z-index: 1;
+        }
+        .step {
+            position: relative;
+            z-index: 2;
+            text-align: center;
+            flex: 1;
+        }
+        .step-circle {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: #dee2e6;
+            color: #6c757d;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 10px;
+            font-weight: bold;
+        }
+        .step.active .step-circle {
+            background: #764ba2;
+            color: white;
+        }
+        .step.completed .step-circle {
+            background: #28a745;
+            color: white;
+        }
+        .nav-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 30px;
+        }
+        .info-tooltip {
+            color: #764ba2;
+            cursor: help;
+            margin-left: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="assessment-container">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-lg-10">
+                    <div class="form-card">
+                        <!-- Form Header -->
+                        <div class="form-header">
+                            <h1><i class="fas fa-heartbeat me-2"></i> Comprehensive Health Assessment</h1>
+                            <p class="mb-0">Upload your ECG image and provide health information for a complete risk analysis</p>
+                        </div>
+
+                        <!-- Form Body -->
+                        <div class="form-body">
+                            <!-- Step Indicator -->
+                            <div class="step-indicator">
+                                <div class="step active" data-step="1">
+                                    <div class="step-circle">1</div>
+                                    <div>ECG Upload</div>
+                                </div>
+                                <div class="step" data-step="2">
+                                    <div class="step-circle">2</div>
+                                    <div>Health Information</div>
+                                </div>
+                                <div class="step" data-step="3">
+                                    <div class="step-circle">3</div>
+                                    <div>Lifestyle</div>
+                                </div>
+                                <div class="step" data-step="4">
+                                    <div class="step-circle">4</div>
+                                    <div>Review</div>
+                                </div>
+                            </div>
+
+                            <form id="combinedForm" method="POST" enctype="multipart/form-data">
+                                <!-- Step 1: ECG Upload -->
+                                <div class="form-step active" id="step1">
+                                    <h3 class="section-title">
+                                        <i class="fas fa-file-medical feature-icon"></i>ECG Image Analysis
+                                    </h3>
+                                    
+                                    <div class="mb-4">
+                                        <label class="form-label required">Upload ECG Image</label>
+                                        <div class="upload-area" id="uploadArea">
+                                            <i class="fas fa-cloud-upload-alt fa-3x mb-3" style="color: #764ba2;"></i>
+                                            <h5>Drag & Drop your ECG image here</h5>
+                                            <p class="text-muted">or click to browse files</p>
+                                            <p class="text-muted small">Supported formats: PNG, JPG, JPEG, WEBP (Max 16MB)</p>
+                                            <input type="file" id="ecgFile" name="ecg_image" accept=".png,.jpg,.jpeg,.webp" class="d-none" required>
+                                        </div>
+                                        <img id="imagePreview" class="upload-preview img-thumbnail mt-3" style="display: none;">
+                                    </div>
+
+                                    <div class="alert alert-info">
+                                        <i class="fas fa-info-circle me-2"></i>
+                                        <strong>Note:</strong> For best results, ensure your ECG image is clear, well-lit, and shows the complete waveform. Avoid blurry or rotated images.
+                                    </div>
+                                </div>
+
+                                <!-- Step 2: Personal Health Information -->
+                                <div class="form-step" id="step2">
+                                    <h3 class="section-title">
+                                        <i class="fas fa-user-md feature-icon"></i>Personal Health Information
+                                    </h3>
+                                    
+                                    <div class="row">
+                                        <div class="col-md-6 mb-3">
+                                            <label class="form-label required">Age Category</label>
+                                            <select class="form-select" name="age_category" required>
+                                                <option value="">Select age range</option>
+                                                <option value="18-24">18-24 years</option>
+                                                <option value="25-29">25-29 years</option>
+                                                <option value="30-34">30-34 years</option>
+                                                <option value="35-39">35-39 years</option>
+                                                <option value="40-44">40-44 years</option>
+                                                <option value="45-49">45-49 years</option>
+                                                <option value="50-54">50-54 years</option>
+                                                <option value="55-59">55-59 years</option>
+                                                <option value="60-64">60-64 years</option>
+                                                <option value="65-69">65-69 years</option>
+                                                <option value="70-74">70-74 years</option>
+                                                <option value="75-79">75-79 years</option>
+                                                <option value="80+">80+ years</option>
+                                            </select>
+                                        </div>
+
+                                        <div class="col-md-6 mb-3">
+                                            <label class="form-label required">Sex</label>
+                                            <select class="form-select" name="sex" required>
+                                                <option value="">Select sex</option>
+                                                <option value="Male">Male</option>
+                                                <option value="Female">Female</option>
+                                            </select>
+                                        </div>
+
+                                        <div class="col-md-4 mb-3">
+                                            <label class="form-label required">Height (cm)</label>
+                                            <input type="number" class="form-control" name="height_cm" min="100" max="250" step="0.1" required>
+                                        </div>
+
+                                        <div class="col-md-4 mb-3">
+                                            <label class="form-label required">Weight (kg)</label>
+                                            <input type="number" class="form-control" name="weight_kg" min="30" max="200" step="0.1" required>
+                                        </div>
+
+                                        <div class="col-md-4 mb-3">
+                                            <label class="form-label required">BMI</label>
+                                            <input type="number" class="form-control" name="bmi" min="15" max="50" step="0.1" required>
+                                            <small class="text-muted">Calculated automatically from height & weight</small>
+                                        </div>
+
+                                        <div class="col-md-6 mb-3">
+                                            <label class="form-label required">General Health</label>
+                                            <select class="form-select" name="general_health" required>
+                                                <option value="">Select health status</option>
+                                                <option value="Excellent">Excellent</option>
+                                                <option value="Very Good">Very Good</option>
+                                                <option value="Good">Good</option>
+                                                <option value="Fair">Fair</option>
+                                                <option value="Poor">Poor</option>
+                                            </select>
+                                        </div>
+
+                                        <div class="col-md-6 mb-3">
+                                            <label class="form-label required">Last Checkup</label>
+                                            <select class="form-select" name="checkup" required>
+                                                <option value="">Select timeframe</option>
+                                                <option value="Within the past year">Within the past year</option>
+                                                <option value="Within the past 2 years">Within the past 2 years</option>
+                                                <option value="Within the past 5 years">Within the past 5 years</option>
+                                                <option value="5 or more years ago">5 or more years ago</option>
+                                                <option value="Never">Never</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Step 3: Medical History & Lifestyle -->
+                                <div class="form-step" id="step3">
+                                    <h3 class="section-title">
+                                        <i class="fas fa-history feature-icon"></i>Medical History & Lifestyle
+                                    </h3>
+                                    
+                                    <div class="row">
+                                        <!-- Medical Conditions -->
+                                        <div class="col-md-6 mb-4">
+                                            <h5>Medical Conditions</h5>
+                                            <div class="card">
+                                                <div class="card-body">
+                                                    <div class="mb-3">
+                                                        <label class="form-label required">Do you have Heart Disease / Coronary Heart Disease?</label>
+                                                        <select class="form-select" name="heart_disease" required>
+                                                            <option value="">Select</option>
+                                                            <option value="No">No</option>
+                                                            <option value="Yes">Yes</option>
+                                                        </select>
+                                                    </div>
+                                                    <div class="mb-3">
+                                                        <label class="form-label required">Diabetes</label>
+                                                        <select class="form-select" name="diabetes" required>
+                                                            <option value="">Select</option>
+                                                            <option value="No">No</option>
+                                                            <option value="No, pre-diabetes or borderline diabetes">Pre-diabetes/Borderline</option>
+                                                            <option value="Yes">Yes</option>
+                                                            <option value="Yes, but female told only during pregnancy">Gestational Diabetes</option>
+                                                        </select>
+                                                    </div>
+                                                    <div class="mb-3">
+                                                        <label class="form-label required">Smoking History</label>
+                                                        <select class="form-select" name="smoking_history" required>
+                                                            <option value="">Select</option>
+                                                            <option value="No">No</option>
+                                                            <option value="Yes">Yes</option>
+                                                        </select>
+                                                    </div>
+                                                    <div class="row">
+                                                        <div class="col-6 mb-3">
+                                                            <label class="form-label required">Skin Cancer</label>
+                                                            <select class="form-select" name="skin_cancer" required>
+                                                                <option value="">Select</option>
+                                                                <option value="No">No</option>
+                                                                <option value="Yes">Yes</option>
+                                                            </select>
+                                                        </div>
+                                                        <div class="col-6 mb-3">
+                                                            <label class="form-label required">Other Cancer</label>
+                                                            <select class="form-select" name="other_cancer" required>
+                                                                <option value="">Select</option>
+                                                                <option value="No">No</option>
+                                                                <option value="Yes">Yes</option>
+                                                            </select>
+                                                        </div>
+                                                    </div>
+                                                    <div class="row">
+                                                        <div class="col-6 mb-3">
+                                                            <label class="form-label required">Depression</label>
+                                                            <select class="form-select" name="depression" required>
+                                                                <option value="">Select</option>
+                                                                <option value="No">No</option>
+                                                                <option value="Yes">Yes</option>
+                                                            </select>
+                                                        </div>
+                                                        <div class="col-6 mb-3">
+                                                            <label class="form-label required">Arthritis</label>
+                                                            <select class="form-select" name="arthritis" required>
+                                                                <option value="">Select</option>
+                                                                <option value="No">No</option>
+                                                                <option value="Yes">Yes</option>
+                                                            </select>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <!-- Lifestyle Factors -->
+                                        <div class="col-md-6 mb-4">
+                                            <h5>Lifestyle Factors</h5>
+                                            <div class="card">
+                                                <div class="card-body">
+                                                    <div class="mb-3">
+                                                        <label class="form-label required">Exercise
+                                                            <i class="fas fa-question-circle info-tooltip" title="Do you exercise in the last 30 days?"></i>
+                                                        </label>
+                                                        <select class="form-select" name="exercise" required>
+                                                            <option value="">Select</option>
+                                                            <option value="No">No</option>
+                                                            <option value="Yes">Yes</option>
+                                                        </select>
+                                                    </div>
+
+                                                    <div class="mb-3">
+                                                        <label class="form-label required">Alcohol Consumption (days/month)
+                                                            <i class="fas fa-question-circle info-tooltip" title="How many days in a month do you drink alcohol?"></i>
+                                                        </label>
+                                                        <input type="range" class="form-range" name="alcohol_consumption" min="0" max="30" value="0">
+                                                        <div class="d-flex justify-content-between">
+                                                            <small>0 days</small>
+                                                            <span id="alcoholValue">0</span>
+                                                            <small>30 days</small>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="mb-3">
+                                                        <label class="form-label required">Fruit Consumption (times/month)</label>
+                                                        <input type="range" class="form-range" name="fruit_consumption" min="0" max="30" value="10">
+                                                        <div class="d-flex justify-content-between">
+                                                            <small>0 times</small>
+                                                            <span id="fruitValue">10</span>
+                                                            <small>30 times</small>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="mb-3">
+                                                        <label class="form-label required">Vegetable Consumption (times/month)</label>
+                                                        <input type="range" class="form-range" name="green_vegetables_consumption" min="0" max="30" value="10">
+                                                        <div class="d-flex justify-content-between">
+                                                            <small>0 times</small>
+                                                            <span id="vegValue">10</span>
+                                                            <small>30 times</small>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="mb-3">
+                                                        <label class="form-label required">Fried Potato Consumption (times/month)</label>
+                                                        <input type="range" class="form-range" name="friedpotato_consumption" min="0" max="30" value="2">
+                                                        <div class="d-flex justify-content-between">
+                                                            <small>0 times</small>
+                                                            <span id="potatoValue">2</span>
+                                                            <small>30 times</small>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Step 4: Review & Submit -->
+                                <div class="form-step" id="step4">
+                                    <h3 class="section-title">
+                                        <i class="fas fa-clipboard-check feature-icon"></i>Review Information
+                                    </h3>
+                                    
+                                    <div class="card mb-4">
+                                        <div class="card-body">
+                                            <h5>Review your information</h5>
+                                            <div id="reviewSummary"></div>
+                                        </div>
+                                    </div>
+
+                                    <div class="alert alert-warning">
+                                        <i class="fas fa-exclamation-triangle me-2"></i>
+                                        <strong>Disclaimer:</strong> This assessment provides general health insights based on AI analysis. It is not a substitute for professional medical advice. Always consult with healthcare professionals for medical concerns.
+                                    </div>
+
+                                    <div class="form-check mb-4">
+                                        <input class="form-check-input" type="checkbox" id="consentCheck" required>
+                                        <label class="form-check-label" for="consentCheck">
+                                            I understand that this is an AI-based assessment and not medical diagnosis. I consent to the analysis of my provided information.
+                                        </label>
+                                    </div>
+                                </div>
+
+                                <!-- Navigation Buttons -->
+                                <div class="nav-buttons">
+                                    <button type="button" class="btn btn-outline-secondary" id="prevBtn" style="display: none;">
+                                        <i class="fas fa-arrow-left me-2"></i>Previous
+                                    </button>
+                                    
+                                    <button type="button" class="btn btn-primary ms-auto" id="nextBtn">
+                                        Next<i class="fas fa-arrow-right ms-2"></i>
+                                    </button>
+                                    
+                                    <button type="submit" class="btn btn-success" id="submitBtn" style="display: none;">
+                                        <i class="fas fa-heartbeat me-2"></i>Get Complete Assessment
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+
+                    <!-- <div class="text-center text-white">
+                        <p>Need help? <a href="/about" class="text-white fw-bold">Learn how the assessment works</a></p>
+                        <p><a href="/health" class="text-white">Health assessment only</a> | <a href="/ecg" class="text-white">ECG analysis only</a></p>
+                    </div> -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Form Step Management
+        let currentStep = 1;
+        const totalSteps = 4;
+
+        function showStep(step) {
+            // Hide all steps
+            document.querySelectorAll('.form-step').forEach(stepEl => {
+                stepEl.classList.remove('active');
+            });
+            
+            // Show current step
+            document.getElementById(`step${step}`).classList.add('active');
+            
+            // Update step indicator
+            document.querySelectorAll('.step').forEach(stepEl => {
+                const stepNum = parseInt(stepEl.dataset.step);
+                stepEl.classList.remove('active', 'completed');
+                
+                if (stepNum === step) {
+                    stepEl.classList.add('active');
+                } else if (stepNum < step) {
+                    stepEl.classList.add('completed');
+                }
+            });
+            
+            // Update buttons
+            document.getElementById('prevBtn').style.display = step > 1 ? 'block' : 'none';
+            document.getElementById('nextBtn').style.display = step < totalSteps ? 'block' : 'none';
+            document.getElementById('submitBtn').style.display = step === totalSteps ? 'block' : 'none';
+            
+            // If on review step, update summary
+            if (step === 4) {
+                updateReviewSummary();
+            }
+        }
+
+        // Next button
+        document.getElementById('nextBtn').addEventListener('click', () => {
+            if (validateStep(currentStep)) {
+                currentStep++;
+                showStep(currentStep);
+            }
+        });
+
+        // Previous button
+        document.getElementById('prevBtn').addEventListener('click', () => {
+            currentStep--;
+            showStep(currentStep);
+        });
+
+        // Submit button
+        document.getElementById('submitBtn').addEventListener('click', (e) => {
+            e.preventDefault(); // Prevent default to allow validation
+            if (validateStep(currentStep)) {
+                // Temporarily show all steps to ensure all fields are submitted
+                document.querySelectorAll('.form-step').forEach(stepEl => {
+                    stepEl.style.display = 'block';
+                });
+                document.getElementById('combinedForm').submit();
+            }
+        });
+
+        // Validate current step
+        function validateStep(step) {
+            const stepElement = document.getElementById(`step${step}`);
+            const inputs = stepElement.querySelectorAll('[required]');
+            
+            let isValid = true;
+            inputs.forEach(input => {
+                if (!input.value.trim()) {
+                    input.classList.add('is-invalid');
+                    isValid = false;
+                } else {
+                    input.classList.remove('is-invalid');
+                }
+            });
+            
+            if (!isValid) {
+                alert('Please fill in all required fields');
+            }
+            
+            return isValid;
+        }
+
+        // File Upload Handling
+        const uploadArea = document.getElementById('uploadArea');
+        const fileInput = document.getElementById('ecgFile');
+        const imagePreview = document.getElementById('imagePreview');
+
+        uploadArea.addEventListener('click', () => fileInput.click());
+
+        fileInput.addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    imagePreview.src = e.target.result;
+                    imagePreview.style.display = 'block';
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+
+        // Drag and drop
+        uploadArea.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            uploadArea.style.borderColor = '#667eea';
+        });
+
+        uploadArea.addEventListener('dragleave', () => {
+            uploadArea.style.borderColor = '#764ba2';
+        });
+
+        uploadArea.addEventListener('drop', (e) => {
+            e.preventDefault();
+            uploadArea.style.borderColor = '#764ba2';
+            const file = e.dataTransfer.files[0];
+            if (file && file.type.startsWith('image/')) {
+                fileInput.files = e.dataTransfer.files;
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    imagePreview.src = e.target.result;
+                    imagePreview.style.display = 'block';
+                };
+                reader.readAsDataURL(file);
+            } else {
+                alert('Please upload an image file');
+            }
+        });
+
+        // Range value displays
+        const ranges = ['alcohol_consumption', 'fruit_consumption', 'green_vegetables_consumption', 'friedpotato_consumption'];
+        ranges.forEach(name => {
+            const range = document.querySelector(`[name="${name}"]`);
+            const display = document.getElementById(`${name.replace('_consumption', '')}Value`);
+            
+            if (range && display) {
+                display.textContent = range.value;
+                range.addEventListener('input', () => {
+                    display.textContent = range.value;
+                });
+            }
+        });
+
+        // BMI Calculation
+        const heightInput = document.querySelector('[name="height_cm"]');
+        const weightInput = document.querySelector('[name="weight_kg"]');
+        const bmiInput = document.querySelector('[name="bmi"]');
+
+        function calculateBMI() {
+            const height = parseFloat(heightInput.value) / 100; // Convert to meters
+            const weight = parseFloat(weightInput.value);
+            
+            if (height > 0 && weight > 0) {
+                const bmi = (weight / (height * height)).toFixed(1);
+                bmiInput.value = bmi;
+            }
+        }
+
+        if (heightInput && weightInput && bmiInput) {
+            heightInput.addEventListener('input', calculateBMI);
+            weightInput.addEventListener('input', calculateBMI);
+        }
+
+        // Review Summary
+        function updateReviewSummary() {
+            const form = document.getElementById('combinedForm');
+            const formData = new FormData(form);
+            let summary = '<div class="row">';
+            
+            // ECG Info
+            const file = fileInput.files[0];
+            if (file) {
+                summary += `
+                    <div class="col-md-6">
+                        <h6><i class="fas fa-file-medical text-primary"></i> ECG Image</h6>
+                        <p class="mb-1"><strong>File:</strong> ${file.name}</p>
+                        <p class="mb-1"><strong>Size:</strong> ${(file.size / 1024).toFixed(1)} KB</p>
+                        <p><strong>Type:</strong> ${file.type}</p>
+                    </div>
+                `;
+            }
+            
+            // Health Info
+            const age = formData.get('age_category');
+            const sex = formData.get('sex');
+            const health = formData.get('general_health');
+            
+            summary += `
+                <div class="col-md-6">
+                    <h6><i class="fas fa-user-md text-primary"></i> Health Profile</h6>
+                    <p class="mb-1"><strong>Age:</strong> ${age || 'Not specified'}</p>
+                    <p class="mb-1"><strong>Sex:</strong> ${sex || 'Not specified'}</p>
+                    <p class="mb-1"><strong>Health Status:</strong> ${health || 'Not specified'}</p>
+                    <p><strong>BMI:</strong> ${bmiInput?.value || 'Not calculated'}</p>
+                </div>
+            </div>
+            
+            <div class="row mt-3">
+                <div class="col-md-6">
+                    <h6><i class="fas fa-history text-primary"></i> Medical History</h6>
+                    <p class="mb-1"><strong>Diabetes:</strong> ${formData.get('diabetes')}</p>
+                    <p class="mb-1"><strong>Smoking:</strong> ${formData.get('smoking_history')}</p>
+                    <p><strong>Exercise:</strong> ${formData.get('exercise')}</p>
+                </div>
+                
+                <div class="col-md-6">
+                    <h6><i class="fas fa-utensils text-primary"></i> Lifestyle</h6>
+                    <p class="mb-1"><strong>Alcohol:</strong> ${formData.get('alcohol_consumption')} days/month</p>
+                    <p class="mb-1"><strong>Fruit:</strong> ${formData.get('fruit_consumption')} times/month</p>
+                    <p><strong>Vegetables:</strong> ${formData.get('green_vegetables_consumption')} times/month</p>
+                </div>
+            </div>`;
+            
+            document.getElementById('reviewSummary').innerHTML = summary;
+        }
+
+        // Initialize
+        showStep(1);
+    </script>
+</body>
+</html>

@@ -1,0 +1,201 @@
+{% extends "base.html" %}
+
+{% block title %}Dataset - MCPS Security{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="d-flex justify-content-between align-items-center">
+            <h1 class="display-6">
+                <i class="fas fa-database text-primary"></i>
+                MCPS Intrusion Detection Dataset
+            </h1>
+            <a href="{{ url_for('upload_dataset') }}" class="btn btn-primary">
+                <i class="fas fa-upload"></i> Upload New Dataset
+            </a>
+        </div>
+        <p class="lead">View and analyze the medical network traffic dataset</p>
+    </div>
+</div>
+
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header bg-info text-white">
+                <h5 class="mb-0">
+                    <i class="fas fa-info-circle"></i>
+                    Dataset Information
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-3">
+                        <div class="text-center p-3 border rounded">
+                            <h6 class="text-muted">Total Features</h6>
+                            <h3 class="text-primary">21</h3>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="text-center p-3 border rounded">
+                            <h6 class="text-muted">Attack Types</h6>
+                            <h3 class="text-danger">5</h3>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="text-center p-3 border rounded">
+                            <h6 class="text-muted">Normal Traffic</h6>
+                            <h3 class="text-success">1</h3>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="text-center p-3 border rounded">
+                            <h6 class="text-muted">Total Classes</h6>
+                            <h3 class="text-warning">6</h3>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">
+                    <i class="fas fa-table"></i>
+                    Dataset Preview (First 100 Rows)
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    {% if table %}
+                        {{ table|safe }}
+                    {% else %}
+                        <div class="text-center p-5">
+                            <i class="fas fa-database fa-4x text-muted mb-3"></i>
+                            <h4>No Dataset Available</h4>
+                            <p class="text-muted">Upload a dataset to get started</p>
+                            <a href="{{ url_for('upload_dataset') }}" class="btn btn-primary">
+                                <i class="fas fa-upload"></i> Upload Dataset
+                            </a>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-6">
+        <div class="card h-100">
+            <div class="card-header bg-primary text-white">
+                <h5 class="mb-0">
+                    <i class="fas fa-list-alt"></i>
+                    Feature Description
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="accordion" id="featureAccordion">
+                    {% for feature in [
+                        ('Flgs', 'Connection flags and status'),
+                        ('Sport', 'Source port number'),
+                        ('DstBytes', 'Destination bytes transferred'),
+                        ('SrcLoad', 'Source load/throughput'),
+                        ('DstLoad', 'Destination load/throughput'),
+                        ('SIntPkt', 'Source inter-packet arrival time'),
+                        ('DIntPkt', 'Destination inter-packet arrival time'),
+                        ('DstJitter', 'Destination jitter measurement'),
+                        ('sMaxPktSz', 'Maximum packet size from source'),
+                        ('Dur', 'Connection duration')
+                    ] %}
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="heading{{ loop.index }}">
+                            <button class="accordion-button collapsed" type="button" 
+                                    data-bs-toggle="collapse" 
+                                    data-bs-target="#collapse{{ loop.index }}">
+                                {{ feature[0] }}
+                            </button>
+                        </h2>
+                        <div id="collapse{{ loop.index }}" class="accordion-collapse collapse">
+                            <div class="accordion-body">
+                                {{ feature[1] }}
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-6">
+        <div class="card h-100">
+            <div class="card-header bg-success text-white">
+                <h5 class="mb-0">
+                    <i class="fas fa-chart-pie"></i>
+                    Dataset Statistics
+                </h5>
+            </div>
+            <div class="card-body">
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        Network Features
+                        <span class="badge bg-primary rounded-pill">12</span>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        Medical Device Features
+                        <span class="badge bg-success rounded-pill">4</span>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        Derived Features
+                        <span class="badge bg-warning rounded-pill">5</span>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        Categorical Features
+                        <span class="badge bg-info rounded-pill">2</span>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        Numerical Features
+                        <span class="badge bg-danger rounded-pill">19</span>
+                    </li>
+                </ul>
+                
+                <div class="mt-4">
+                    <h6>Dataset Requirements:</h6>
+                    <ul class="list-unstyled">
+                        <li><i class="fas fa-check text-success me-2"></i> CSV format</li>
+                        <li><i class="fas fa-check text-success me-2"></i> 21 feature columns</li>
+                        <li><i class="fas fa-check text-success me-2"></i> 'attack_type' column</li>
+                        <li><i class="fas fa-check text-success me-2"></i> No missing values</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mt-4">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">
+                    <i class="fas fa-download"></i>
+                    Download Sample Dataset
+                </h5>
+            </div>
+            <div class="card-body text-center">
+                <p>Download a sample dataset to understand the required format:</p>
+                <a href="#" class="btn btn-outline-primary me-2">
+                    <i class="fas fa-file-csv"></i> Download CSV Template
+                </a>
+                <a href="#" class="btn btn-outline-success">
+                    <i class="fas fa-book"></i> Dataset Documentation
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

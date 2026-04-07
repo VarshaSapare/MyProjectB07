@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+{% block title %}ECG Result - Cardiac Health AI{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h2 class="text-center mb-5 text-danger"><i class="fas fa-file-medical me-3"></i>ECG Analysis Result</h2>
+
+    <div class="row justify-content-center">
+        <div class="col-lg-10">
+            <div class="card shadow-lg border-0">
+                <div class="card-body p-5">
+                    <div class="row">
+                        <div class="col-md-6 text-center mb-4">
+                            <h5>Your Uploaded ECG</h5>
+                            <img src="{{ url_for('static', filename='uploads/' + image) }}" class="img-fluid rounded shadow" alt="ECG Image">
+                        </div>
+                        <div class="col-md-6">
+                            <h3 class="text-center mb-4">Prediction</h3>
+                            <div class="text-center">
+                                <span class="badge bg-{{ 'danger' if prediction.code in ['F','M','Q','S','V'] else 'success' }} fs-4 py-4 px-3 mb-2">
+                                    <strong>{{ prediction.code }}</strong> - {{ prediction.name }}
+                                </span>
+                                <div class="mt-4">
+                                    <h4>Confidence: <strong>{{ "%.2f"|format(prediction.confidence * 100) }}%</strong></h4>
+                                    <div class="progress mt-1" style="height: 30px;">
+                                        <div class="progress-bar bg-danger" style="width: {{ prediction.confidence * 100 }}%">
+                                            {{ "%.1f"|format(prediction.confidence * 100) }}%
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mt-5 text-center">
+                        <a href="{{ url_for('ecg_diagnosis') }}" class="btn btn-outline-danger btn-lg me-3">
+                            <i class="fas fa-upload me-2"></i>New Analysis
+                        </a>
+                        <a href="{{ url_for('history_ecg') }}" class="btn btn-primary btn-lg">
+                            <i class="fas fa-history me-2"></i>View History
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,280 @@
+{% extends "base.html" %}
+
+{% block title %}Register - cancer Detection Security{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8 col-lg-6">
+        <div class="card shadow-lg">
+            <div class="card-header bg-primary text-white text-center py-3">
+                <h3 class="mb-0">
+                    <i class="fas fa-user-plus me-2"></i>
+                    Create Account
+                </h3>
+                <p class="mb-0">Join Cancer Detection System</p>
+            </div>
+            
+            <div class="card-body p-4">
+                <form method="POST" action="{{ url_for('register') }}" id="registerForm">
+                    <div class="row mb-3">
+                        <div class="col-md-12">
+                            <label for="username" class="form-label">
+                                <i class="fas fa-user"></i> Username
+                            </label>
+                            <input type="text" class="form-control form-control-lg" 
+                                   id="username" name="username" required
+                                   placeholder="Choose a username">
+                            <div class="form-text">3-20 characters, letters and numbers only</div>
+                        </div>
+                    </div>
+                    
+                    <div class="row mb-3">
+                        <div class="col-md-12">
+                            <label for="email" class="form-label">
+                                <i class="fas fa-envelope"></i> Email Address
+                            </label>
+                            <input type="email" class="form-control form-control-lg" 
+                                   id="email" name="email" required
+                                   placeholder="your.email@example.com">
+                            <div class="form-text">Enter your email</div>
+                        </div>
+                    </div>
+                    
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label for="password" class="form-label">
+                                <i class="fas fa-lock"></i> Password
+                            </label>
+                            <input type="password" class="form-control form-control-lg" 
+                                   id="password" name="password" required
+                                   placeholder="Enter password">
+                            <div class="form-text">Minimum 8 characters</div>
+                        </div>
+                        
+                        <div class="col-md-6">
+                            <label for="confirm_password" class="form-label">
+                                <i class="fas fa-lock"></i> Confirm Password
+                            </label>
+                            <input type="password" class="form-control form-control-lg" 
+                                   id="confirm_password" name="confirm_password" required
+                                   placeholder="Confirm password">
+                            <div class="form-text">Re-enter your password</div>
+                        </div>
+                    </div>
+                    
+                    <!-- Password Strength Indicator -->
+                    <div class="row mb-3">
+                        <div class="col-12">
+                            <div class="password-strength">
+                                <small class="text-muted">Password Strength:</small>
+                                <div class="progress mt-1" style="height: 5px;">
+                                    <div class="progress-bar" id="passwordStrength" style="width: 0%;"></div>
+                                </div>
+                                <small id="strengthText" class="text-muted"></small>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    
+                    <div class="row mb-3">
+                        <div class="col-12">
+                            <button type="submit" class="btn btn-primary btn-lg w-100">
+                                <i class="fas fa-user-plus"></i> Create Account
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-12 text-center">
+                            <p class="mb-0">
+                                Already have an account? 
+                                <a href="{{ url_for('login') }}" class="text-decoration-none">
+                                    <strong>Sign In</strong>
+                                </a>
+                            </p>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            
+            <div class="card-footer text-center py-3 bg-light">
+                <small class="text-muted">
+                    <i class="fas fa-shield-alt"></i> Secure registration • 
+                    <i class="fas fa-user-shield"></i> Privacy protected • 
+                    <i class="fas fa-lock"></i> Encrypted connection
+                </small>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Terms Modal -->
+<div class="modal fade" id="termsModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Terms of Service</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <p>This Cancer Detection System is for authorized use only. Users must:</p>
+                <ul>
+                    <li>Use the system only for legitimate security testing</li>
+                    <li>Not attempt to circumvent security measures</li>
+                    <li>Report any vulnerabilities discovered</li>
+                    <li>Comply with all applicable laws and regulations</li>
+                    <li>Respect patient privacy and data protection laws</li>
+                </ul>
+                <p>Unauthorized access or use may result in termination of access.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Privacy Modal -->
+<div class="modal fade" id="privacyModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Privacy Policy</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <p>We value your privacy. Our commitment includes:</p>
+                <ul>
+                    <li>Encryption of all user data</li>
+                    <li>No sharing of personal information with third parties</li>
+                    <li>Regular security audits</li>
+                    <li>Compliance with data protection regulations</li>
+                    <li>Transparent data usage policies</li>
+                </ul>
+                <p>For more details, contact our privacy officer.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const password = document.getElementById('password');
+    const confirmPassword = document.getElementById('confirm_password');
+    const strengthBar = document.getElementById('passwordStrength');
+    const strengthText = document.getElementById('strengthText');
+    
+    // Password strength checker
+    password.addEventListener('input', function() {
+        const pass = password.value;
+        let strength = 0;
+        
+        // Check length
+        if (pass.length >= 8) strength += 25;
+        if (pass.length >= 12) strength += 10;
+        
+        // Check for mixed case
+        if (/[a-z]/.test(pass) && /[A-Z]/.test(pass)) strength += 25;
+        
+        // Check for numbers
+        if (/\d/.test(pass)) strength += 25;
+        
+        // Check for special characters
+        if (/[^a-zA-Z0-9]/.test(pass)) strength += 25;
+        
+        // Update strength bar
+        strengthBar.style.width = Math.min(strength, 100) + '%';
+        
+        // Update colors and text
+        if (strength < 50) {
+            strengthBar.className = 'progress-bar bg-danger';
+            strengthText.textContent = 'Weak password';
+            strengthText.className = 'text-danger';
+        } else if (strength < 75) {
+            strengthBar.className = 'progress-bar bg-warning';
+            strengthText.textContent = 'Moderate password';
+            strengthText.className = 'text-warning';
+        } else {
+            strengthBar.className = 'progress-bar bg-success';
+            strengthText.textContent = 'Strong password';
+            strengthText.className = 'text-success';
+        }
+        
+        // Check password match
+        if (confirmPassword.value) {
+            checkPasswordMatch();
+        }
+    });
+    
+    // Confirm password checker
+    confirmPassword.addEventListener('input', checkPasswordMatch);
+    
+    function checkPasswordMatch() {
+        if (password.value !== confirmPassword.value) {
+            confirmPassword.setCustomValidity("Passwords don't match");
+            confirmPassword.className = 'form-control form-control-lg is-invalid';
+        } else {
+            confirmPassword.setCustomValidity('');
+            confirmPassword.className = 'form-control form-control-lg is-valid';
+        }
+    }
+    
+    // Form submission
+    const form = document.getElementById('registerForm');
+    form.addEventListener('submit', function(e) {
+        if (!form.checkValidity()) {
+            e.preventDefault();
+            e.stopPropagation();
+        }
+        form.classList.add('was-validated');
+    });
+});
+</script>
+
+<style>
+    /* Existing styles */
+    .progress {
+        background-color: #e9ecef;
+        border-radius: 10px;
+        overflow: hidden;
+    }
+    .progress-bar {
+        transition: width 0.5s ease;
+        border-radius: 10px;
+    }
+    .form-control:focus {
+        border-color: #667eea;
+        box-shadow: 0 0 0 0.25rem rgba(102, 126, 234, 0.25);
+    }
+
+    /* New: Full-page background image */
+    body {
+        background: url('{{ url_for("static", filename="images/register.jpg") }}') no-repeat center center fixed;
+        background-size: cover;
+        min-height: 100vh;
+        margin: 0;
+        padding: 0;
+    }
+
+    /* Dark overlay behind the card for better readability */
+    .card {
+        background-color: rgba(255, 255, 255, 0.479); /* Reduced from 0.92 to 0.75 for more transparency */
+        backdrop-filter: blur(12px); /* Increased blur for smoother frosted glass look */
+        border: 1px solid rgba(255, 255, 255, 0.4);
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15); /* Softer shadow for depth */
+    }
+    .card-body, .card-header, .card-footer {
+        color: #212529; /* Bootstrap dark text */
+    }
+    /* Optional: Add padding to body to center content vertically if needed */
+    .row.justify-content-center {
+        min-height: 100vh;
+        align-items: center;
+    }
+</style>
+{% endblock %}  
+{% endblock %}

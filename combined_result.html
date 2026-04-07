@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Comprehensive Health Assessment Results</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
+    <style>
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+
+        .risk-score-card {
+            border-radius: 15px;
+            color: white;
+            padding: 25px;
+            margin-bottom: 25px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        .severity-0 { background: linear-gradient(135deg, #6c757d, #495057); }
+        .severity-1 { background: linear-gradient(135deg, #28a745, #20c997); }
+        .severity-2 { background: linear-gradient(135deg, #20c997, #28a745); }
+        .severity-3 { background: linear-gradient(135deg, #ffc107, #fd7e14); }
+        .severity-4 { background: linear-gradient(135deg, #fd7e14, #dc3545); }
+        .severity-5 { background: linear-gradient(135deg, #dc3545, #c82333); }
+        .severity-6 { background: linear-gradient(135deg, #dc3545, #8b0000); }
+        .severity-7 { background: linear-gradient(135deg, #8b0000, #660000); }
+
+        .risk-meter {
+            height: 30px;
+            border-radius: 15px;
+            background: #e9ecef;
+            margin: 20px 0;
+            overflow: hidden;
+        }
+
+        .risk-fill {
+            height: 100%;
+            border-radius: 15px;
+            transition: width 1.5s ease-in-out;
+        }
+
+        .recommendation-item {
+            background: #f8f9fa;
+            border-left: 4px solid #28a745;
+            padding: 15px;
+            border-radius: 0 8px 8px 0;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container py-5">
+    <div class="col-lg-11 col-xl-10 mx-auto">
+
+        <!-- Back Button -->
+        <a href="/combined-assessment" class="btn btn-light mb-4">
+            <i class="fas fa-arrow-left me-2"></i>New Assessment
+        </a>
+
+        <!-- MAIN CARD -->
+        <div class="card shadow-lg">
+
+            <div class="card-header bg-white">
+                <h2 class="mb-0">
+                    <i class="fas fa-heartbeat text-primary me-2"></i>
+                    Comprehensive Health Assessment Results
+                </h2>
+            </div>
+
+            <div class="card-body p-4">
+
+                <!-- RISK SUMMARY -->
+                <div class="risk-score-card severity-{{ combined_result.risk_score }}">
+                    <h1 class="display-4 fw-bold">{{ combined_result.risk_badge }}</h1>
+                    <h4>{{ combined_result.risk_description }}</h4>
+
+                    <div class="risk-meter">
+                        <div class="risk-fill"
+                             style="width: {{ (combined_result.risk_score / 7 * 100)|round(1) }}%;
+                                    background: {{ combined_result.severity_color }};">
+                        </div>
+                    </div>
+
+                    <p><strong>Medical Urgency:</strong> {{ combined_result.medical_urgency }}</p>
+                    <!--<p><strong>Follow-up:</strong> {{ combined_result.follow_up_time }}</p>-->
+                    <p><strong>Confidence:</strong> {{ combined_result.confidence }}</p>
+                </div>
+
+                <!-- TWO COLUMN SECTION -->
+                <div class="row g-4">
+
+                    <!-- ECG -->
+                    <div class="col-md-6">
+                        <div class="card h-100">
+                            <div class="card-header text-white"
+                                 style="background: {{ ecg_prediction.color }}">
+                                ECG Analysis
+                            </div>
+                            <div class="card-body">
+                                <h5>{{ ecg_prediction.name }}</h5>
+                                <p>{{ ecg_prediction.risk_description }}</p>
+                                <p><strong>Severity:</strong> {{ ecg_prediction.severity }}/5</p>
+                                <p><strong>Confidence:</strong>
+                                    {{ (ecg_prediction.confidence * 100)|round(1) }}%</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- HEALTH PROFILE -->
+                    <div class="col-md-6">
+                        <div class="card h-100">
+                            <div class="card-header text-white"
+                                 style="background: {{ health_prediction.color }}">
+                                Health Profile Analysis
+                            </div>
+                            <div class="card-body">
+                                <h5>Cluster {{ health_prediction.cluster }}</h5>
+                                <p>{{ health_prediction.description }}</p>
+                                <p><strong>Risk Level:</strong>
+                                    {{ health_prediction.risk_level }}</p>
+                                <p><strong>Confidence:</strong>
+                                    {{ (health_prediction.confidence * 100)|round(1) }}%</p>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- RECOMMENDATIONS -->
+                <div class="card mt-4">
+                    <div class="card-header bg-success text-white">
+                        Recommendations & Action Plan
+                    </div>
+                    <div class="card-body">
+
+                        {% if combined_result.recommendations %}
+                        <div class="row g-3">
+                            {% for recommendation in combined_result.recommendations %}
+                            <div class="col-lg-6">
+                                <div class="recommendation-item shadow-sm">
+                                    <strong>{{ loop.index }}.</strong>
+                                    {{ recommendation }}
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                        {% endif %}
+
+                        <!-- Priority Actions INSIDE SAME CARD -->
+                        <div class="alert alert-warning mt-4">
+                            <h6>Priority Actions:</h6>
+                            <ul class="mb-0">
+                                <li><strong>Medical Urgency:</strong>
+                                    {{ combined_result.medical_urgency }}</li>
+                                <li><strong>Follow-up:</strong>
+                                    {{ combined_result.follow_up_time }}</li>
+                                <li><strong>Primary Concern:</strong>
+                                    {% if combined_result.risk_score >= 6 %}
+                                    Emergency evaluation required
+                                    {% elif combined_result.risk_score >= 4 %}
+                                    Specialist consultation needed
+                                    {% elif combined_result.risk_score >= 2 %}
+                                    Lifestyle modification
+                                    {% else %}
+                                    Preventive monitoring
+                                    {% endif %}
+                                </li>
+                            </ul>
+                        </div>
+                        <!-- COMPARISON WITH OTHER SCENARIOS -->
+                            <div class="card mt-4">
+                                <div class="card-header bg-info text-white">
+                                    <h5 class="mb-0"><i class="fas fa-chart-bar me-2"></i>Risk Score Interpretation</h5>
+                                </div>
+                                <div class="card-body">
+                                    <div class="table-responsive">
+                                        <table class="table table-hover">
+                                            <thead class="table-light">
+                                                <tr>
+                                                    <th>Score</th>
+                                                    <th>Risk Level</th>
+                                                    <th>Description</th>
+                                                    <th>Recommended Action</th>
+                                                    <th>Your Score</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {% for score, info in risk_score_interpretation.items() %}
+                                                <tr {% if score == combined_result.risk_score %}class="table-active" style="background-color: {{ info.color }}20;"{% endif %}>
+                                                    <td><span class="badge" style="background-color: {{ info.color }}">{{ score }}</span></td>
+                                                    <td><strong>{{ info.level }}</strong></td>
+                                                    <td>{{ info.description }}</td>
+
+<td class="small">
+    {% if score == 0 %}
+        Continue chemotherapy with routine monitoring.
+    {% elif score == 1 %}
+        Maintain regular heart check-ups.
+    {% elif score == 2 %}
+        Increase frequency of heart monitoring tests.
+    {% elif score == 3 %}
+        Close cardiac observation recommended.
+    {% elif score == 4 %}
+        Consult a cardiologist and review treatment.
+    {% elif score == 5 %}
+        Modify chemotherapy plan and start heart-protective care.
+    {% elif score == 6 %}
+        Reduce or pause chemotherapy and begin immediate heart treatment.
+    {% elif score == 7 %}
+        Intensive cardiac management and urgent treatment reassessment required.
+    {% endif %}
+</td>
+
+                                                    <td>
+                                                        {% if score == combined_result.risk_score %}
+                                                        <i class="fas fa-check-circle text-success"></i> Current
+                                                        {% endif %}
+                                                    </td>
+                                                </tr>
+                                                {% endfor %}
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+
+                    </div>
+                </div>
+
+                <!-- ACTION BUTTONS -->
+                <div class="text-center mt-4">
+                    <a href="/combined-assessment" class="btn btn-primary btn-lg">
+                        <i class="fas fa-redo me-2"></i>New Assessment
+                    </a>
+                    <button onclick="window.print()" class="btn btn-outline-secondary btn-lg">
+                        <i class="fas fa-print me-2"></i>Print Report
+                    </button>
+                    <a href="/" class="btn btn-outline-secondary btn-lg">
+                        <i class="fas fa-home me-2"></i>Home
+                    </a>
+                </div>
+
+                <!-- DISCLAIMER -->
+                <div class="alert alert-danger mt-4">
+                    <strong>Medical Disclaimer:</strong>
+                    This AI assessment is for educational purposes only
+                    and does not replace professional medical advice.
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const bars = document.querySelectorAll('.risk-fill');
+    bars.forEach(bar => {
+        const width = bar.style.width;
+        bar.style.width = "0%";
+        setTimeout(() => bar.style.width = width, 500);
+    });
+});
+</script>
+
+</body>
+</html>

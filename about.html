@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% block title %}About - Cardiac Health AI{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="card shadow-lg border-0">
+        <div class="card-header bg-danger text-white text-center py-4">
+            <h1><i class="fas fa-heartbeat me-3"></i>Cardiac Health AI System</h1>
+            <p class="lead">Advanced AI for Early Cardiac Risk Detection</p>
+        </div>
+        <div class="card-body p-5">
+            <h3 class="text-danger">Abstract</h3>
+            <p>This system uses deep learning and machine learning to detect cardiac abnormalities from ECG images and predict overall health status from lifestyle and clinical data.</p>
+
+            <h3 class="text-danger mt-4">ECG Classes Detected</h3>
+            <div class="row g-3">
+                {% set classes = [('F', 'Atrial Fibrillation', 'danger'), ('M', 'Murmur', 'warning'), ('N', 'Normal', 'success'),
+                                 ('Q', 'Premature Ventricular Contraction', 'info'), ('S', 'Supraventricular Tachycardia', 'primary'),
+                                 ('V', 'Ventricular Tachycardia', 'dark')] %}
+                {% for code, name, color in classes %}
+                <div class="col-md-6 col-lg-4">
+                    <span class="badge bg-{{ color }} fs-5 py-3 px-4 w-100">{{ code }}: {{ name }}</span>
+                </div>
+                {% endfor %}
+            </div>
+
+            <h3 class="text-danger mt-4">Health Status Levels</h3>
+            <div class="row text-center">
+                <div class="col"><span class="badge bg-success fs-5">Excellent</span></div>
+                <div class="col"><span class="badge bg-info fs-5">Very Good</span></div>
+                <div class="col"><span class="badge bg-light text-dark fs-5">Good</span></div>
+                <div class="col"><span class="badge bg-warning fs-5">Fair</span></div>
+                <div class="col"><span class="badge bg-danger fs-5">Poor</span></div>
+            </div>
+
+            <div class="text-center mt-5">
+                <a href="{{ url_for('home') }}" class="btn btn-danger btn-lg">Back to Home</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

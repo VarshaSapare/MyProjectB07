@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>General Health Assessment Result</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        .cluster-card { margin-bottom: 1.5rem; }
+        .highlight { background-color: #fff3cd; border-left: 5px solid #ffc107; }
+    </style>
+</head>
+<body class="bg-light">
+    <div class="container my-5">
+        <h2 class="text-center mb-4">Your General Health Cluster Result</h2>
+
+        <div class="card shadow mb-4">
+            <div class="card-header bg-primary text-white">
+                <h4>Predicted Cluster: {{ prediction.cluster }} — {{ prediction.label }}</h4>
+            </div>
+            <div class="card-body highlight">
+                <p><strong>Confidence:</strong> {{ (prediction.confidence * 100)|round(1) }}%</p>
+                <p><strong>Description:</strong> {{ prediction.description }}</p>
+            </div>
+        </div>
+
+        <h4 class="mt-5 mb-3">All Cluster Profiles (for comparison)</h4>
+        
+        {% if clusters_info %}
+            {% for num, info in clusters_info.items() %}
+                <div class="card cluster-card {% if num == prediction.cluster %}border-primary border-3{% endif %}">
+                    <div class="card-header {% if num == prediction.cluster %}bg-primary text-white{% else %}bg-light{% endif %}">
+                        <strong>Cluster {{ num }} — {{ info.title }}</strong>
+                    </div>
+                    <div class="card-body">
+                        <p>{{ info.description }}</p>
+                    </div>
+                </div>
+            {% endfor %}
+        {% else %}
+            <p class="text-muted">Cluster reference information not available.</p>
+        {% endif %}
+
+        <hr>
+
+        <h5>Your Input Summary</h5>
+        <ul>
+            <li>Age: {{ data.age_category }}</li>
+            <li>Sex: {{ data.sex }}</li>
+            <li>BMI: {{ data.bmi }}</li>
+            <li>General Health: {{ data.general_health }}</li>
+            <li>Smoking History: {{ data.smoking_history }}</li>
+            <!-- Add more fields you want to show -->
+        </ul>
+
+        <div class="text-center mt-4">
+            <a href="{{ url_for('health_input') }}" class="btn btn-primary">Assess Again</a>
+            <a href="{{ url_for('home') }}" class="btn btn-secondary">Back to Home</a>
+        </div>
+    </div>
+</body>
+</html>
